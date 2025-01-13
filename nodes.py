@@ -32,6 +32,12 @@ class ImageWithPrompt:
                     "STRING",
                     {"multiline": False, "default": ""},
                 ),
+                "api_url": (
+                    "STRING",
+                    {
+                        "default": "https://api.openai.com/v1",
+                    },
+                ),
             }
         }
 
@@ -47,9 +53,10 @@ class ImageWithPrompt:
         max_tokens: int,
         model: str,
         api_key: str,
+        api_url: str,
     ) -> Tuple[str]:
         api_key = api_key or credentials.get_open_ai_api_key()
-        self.open_ai_client: OpenAIClient = OpenAIClient(api_key=api_key)
+        self.open_ai_client: OpenAIClient = OpenAIClient(api_key=api_key,base_url=api_url)
         b64image = image.pil2base64(image.tensor2pil(Image))
         response = self.open_ai_client.chat.completions.create(
             model=model,
@@ -113,6 +120,12 @@ class TextWithPrompt:
                     "STRING",
                     {"multiline": False, "default": ""},
                 ),
+                "api_url": (
+                    "STRING",
+                    {
+                        "default": "https://api.openai.com/v1",
+                    },
+                ),
             }
         }
 
@@ -122,10 +135,10 @@ class TextWithPrompt:
     CATEGORY = "OpenAI"
 
     def generate_completion(
-        self, text: str, prompt: str, max_tokens: int, model: str, api_key: str
+        self, text: str, prompt: str, max_tokens: int, model: str, api_key: str, api_url: str
     ) -> Tuple[str]:
         api_key = api_key or credentials.get_open_ai_api_key()
-        self.open_ai_client: OpenAIClient = OpenAIClient(api_key=api_key)
+        self.open_ai_client: OpenAIClient = OpenAIClient(api_key=api_key,base_url=api_url)
         response = self.open_ai_client.chat.completions.create(
             model=model,
             max_tokens=max_tokens,
